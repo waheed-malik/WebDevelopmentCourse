@@ -128,6 +128,5 @@
 
 // ---
 
-// Let me know if you want this turned into a PDF or slide-friendly format!
 
 console.log("ali")
