@@ -19,6 +19,12 @@ app.get('/login', (req, res) => {
     res.render("login");
 });
 
+app.get('/profile', isLoggedIn, (req, res) => {
+    console.log(req.user);
+    res.render("login");
+}); // Show user profile
+
+
 app.post('/register', async (req, res) => {
     const { email, password, username, name, age } = req.body;
 
@@ -48,7 +54,7 @@ app.post('/login', async (req, res) => {
     if (!user) return res.status(500).send("User not found");
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(200).send("Incorrect password");
+    if (!isMatch) return res.status(401).send("Incorrect password");
 
     const token = jwt.sign({ email: user.email, userid: user._id }, "sdwd");
     res.cookie("token", token);
@@ -56,11 +62,20 @@ app.post('/login', async (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-    res.cookie("token", "")
+    res.cookie("token", "");
     res.redirect("/login");
 });
 
-function
+function isLoggedIn(req, res, next) {
+    if (!req.cookies.token || req.cookies.token === "") {
+        return res.send("You must be logged in");
+    }
+
+    const data = jwt.verify(req.cookies.token, "sdwd");
+    req.user = data;
+    next();
+}
 
 app.listen(3000, () => {
-    console.log("✅ Server running on http://localhost:
+    console.log("✅ Server running on http://localhost:3000");
+});
