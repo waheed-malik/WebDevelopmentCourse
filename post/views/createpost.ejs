@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Post</title>
+</head>
+<body>
+  <h1>Create Post</h1>
+  <form action="/create-post" method="POST">
+    <label for="userid">Select Username:</label>
+    <select name="userid" required>
+      <% users.forEach(user => { %>
+        <option value="<%= user.username %>"><%= user.username %></option>
+      <% }) %>
+    </select><br><br>
+
+    <textarea name="postdata" placeholder="Write your post here..." rows="5" cols="30" required></textarea><br><br>
+    <button type="submit">Create Post</button>
+  </form>
+</body>
+</html>
