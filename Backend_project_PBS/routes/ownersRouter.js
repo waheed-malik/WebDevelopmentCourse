@@ -5,20 +5,19 @@ const ownerModel = require("../models/owner-model");
 // ✅ Always define route, or control access inside the route instead
 router.post("/create", async function (req, res) {
   try {
-    // Optional: only allow in development mode
+    // Only allow in development (prevent in production)
     if (process.env.NODE_ENV !== "development") {
       return res.status(403).send("You don't have permission to create a new owner.");
     }
 
-    let owners = await ownerModel.find();
-
+    const owners = await ownerModel.find();
     if (owners.length > 0) {
-      return res.status(503).send("You don't have permission to create a new owner.");
+      return res.status(503).send("Owner already exists.");
     }
 
-    const { fullname, email, password } = req.body;
+    let { fullname, email, password } = req.body;
 
-    const createdOwner = await ownerModel.create({
+    let createdOwner = await ownerModel.create({
       fullname,
       email,
       password,
@@ -31,8 +30,10 @@ router.post("/create", async function (req, res) {
   }
 });
 
-router.get("/", function (req, res) {
-  res.send("hey its working");
+router.get("/admin", function (req, res) {
+  const success = req.flash("success");
+  res.render("createproducts", { success });
 });
+
 
 module.exports = router;
